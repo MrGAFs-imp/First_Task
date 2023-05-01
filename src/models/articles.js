@@ -11,34 +11,50 @@ class Article {
 	 * @return {json} the JSON representation of the article
 	 */
 	async getArticleById(id) {
-		const query = `SELECT id, title, content, status, published_by FROM articles WHERE id = ${id};`;
-		return await db.query(query);
+		try {
+			const query = `SELECT id, title, content, status, published_by FROM articles WHERE id = ${id};`;
+			return await db.query(query);
+		} catch (err) {
+			throw err;
+		}
 	}
 	async createArticle(title, content, status, publishedBy) {
-		const query = `INSERT INTO articles(title, content, status, published_by) 
+		try {
+			const query = `INSERT INTO articles(title, content, status, published_by) 
         VALUES("${title}", "${content}", "${status}", "${publishedBy}");`;
-		const result = (await db.query(query))[0].insertId;
-		return (await this.getArticleById(result))[0][0];
+			const result = (await db.query(query))[0].insertId;
+			return (await this.getArticleById(result))[0][0];
+		} catch (err) {
+			throw err;
+		}
 	}
 	/**
 	 *
 	 * @param {number} articleId
-	 * @param {('published', 'unpublished')} status
+	 * @param {('published'| 'unpublished')} status
 	 * @returns
 	 */
 	async changeArticleStatus(articleId, status) {
-		const query = `UPDATE articles SET status = "${status}" WHERE id = ${articleId};`;
-		return await db
-			.query(query)
-			.then(async () => (await this.getArticleById(articleId))[0][0]);
+		try {
+			const query = `UPDATE articles SET status = "${status}" WHERE id = ${articleId};`;
+			return await db
+				.query(query)
+				.then(async () => (await this.getArticleById(articleId))[0][0]);
+		} catch (err) {
+			throw err;
+		}
 	}
 	/**
 	 *
 	 * @returns the list of articles
 	 */
 	async listArticles() {
-		const query = 'SELECT * FROM articles where status = "published";';
-		return (await db.query(query))[0];
+		try {
+			const query = 'SELECT * FROM articles where status = "published";';
+			return (await db.query(query))[0];
+		} catch (err) {
+			throw err;
+		}
 	}
 }
 
